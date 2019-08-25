@@ -19,7 +19,6 @@ namespace travelingSalesman
             var a = Math.Pow(Math.Abs(one.X - two.X), 2);
             var b = Math.Pow(Math.Abs(one.Y - two.Y), 2);
             return Math.Sqrt(a + b);
-            
         }
     }
 }
