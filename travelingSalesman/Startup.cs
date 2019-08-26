@@ -13,6 +13,11 @@ namespace travelingSalesman
                 ["B"] = new Point(3, 7),
                 ["C"] = new Point(10, 4),
             };
+
+            PopulationController pc = new PopulationController();
+            pc.Initialize(load, 100);
+            pc.GetNextNGenerations(3);
         }
     }
 }
+ 

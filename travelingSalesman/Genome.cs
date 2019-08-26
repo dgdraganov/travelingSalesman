@@ -6,7 +6,7 @@ namespace travelingSalesman
 {
     public class Genome
     {
-        private readonly IEnumerable<string> genes;
+        public readonly IEnumerable<string> genes;
 
         public Genome(IEnumerable<string> genes)
         {
