@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,20 +30,43 @@ namespace travelingSalesman
 
         public void GetNextNGenerations(int generations = 1)
         {
+            var numberOfSelected = (int)Math.Round(generationCount * SELECTION_COEFFICIENT);
             for (int i = 0; i < generations; i++)
             {
-                var bestIndividuals = GetBestIndividuals();
+                var bestIndividuals = GetBestIndividuals(this.Population, numberOfSelected);
+                var childrenOfBest = GetChildrenOf(bestIndividuals);
+                var bestChildrenCount = generationCount - numberOfSelected;
+                var bestChildren = GetBestIndividuals(childrenOfBest, bestChildrenCount);
 
-
+                var bufferList = new List<Genome>();
+                bufferList.AddRange(bestIndividuals);
+                bufferList.AddRange(bestChildren);
+                Population = bufferList;
             }
         }
 
-        private IEnumerable<Genome> GetBestIndividuals()
+        private IEnumerable<Genome> GetChildrenOf(IEnumerable<Genome> best)
         {
-            var numberOfSelected = Math.Round(generationCount * SELECTION_COEFFICIENT);
-            var queue = new Queue<Genome>(Population);
+            var children = new List<Genome>();
+            var bestQueue = new Queue<Genome>(best);
 
-            while (queue.Count > numberOfSelected)
+            while (bestQueue.Count > 1)
+            {
+                var first = bestQueue.Dequeue();
+                var second = bestQueue.Dequeue();
+                children.AddRange(Genome.Mate(first, second));
+                children.AddRange(Genome.Mate(second, first));
+            }
+
+            return children;
+        }
+
+        private IEnumerable<Genome> GetBestIndividuals(IEnumerable<Genome> population, int reduceToNumber)
+        {
+            
+            var queue = new Queue<Genome>(population);
+
+            while (queue.Count > reduceToNumber)
             {
                 var first = queue.Dequeue();
                 var second = queue.Dequeue();
@@ -103,6 +126,15 @@ namespace travelingSalesman
             }
 
             return newPopulation;
+        }
+    
+        public void PrintCurrentPopulation()
+        {
+            foreach (var genome in Population)
+            {
+                System.Console.WriteLine(genome);
+            }
+            System.Console.WriteLine("\n============================");
         }
     }
 }
