@@ -24,8 +24,8 @@ namespace travelingSalesman
             };
 
             PopulationController pc = new PopulationController();
-            pc.Initialize(load, 1000, 7);
-            pc.GetNextNGenerations(5);
+            pc.Initialize(load, 1000, 20);
+            pc.GetNextNGenerations(30);
             pc.PrintCurrentPopulation();
         }
     }

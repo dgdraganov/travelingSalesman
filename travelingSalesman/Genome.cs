@@ -8,7 +8,7 @@ namespace travelingSalesman
     public class Genome
     {
         public static Random rand = new Random();
-        public readonly IEnumerable<string> genes;
+        public IEnumerable<string> genes;
 
 
         public Genome(IEnumerable<string> genes)
@@ -35,13 +35,38 @@ namespace travelingSalesman
                 newGenes.AddRange(second.genes.Where(g => !firstParrentGenes.Contains(g)).Take(skipIndex));
                 newGenes.AddRange(firstParrentGenes);
                 newGenes.AddRange(second.genes.Where(g => !newGenes.Contains(g)));
+
                 var newGenome = new Genome(newGenes);
-                newGenes = new List<string>();
-                //mutate
+                Mutator(newGenome, mutationChance);
                 children.Add(newGenome);
+                
+                newGenes = new List<string>();
                 skipIndex++;
             }
             return children;
+        }
+
+        public static void Mutator(Genome genome, int mutationChance)
+        {
+            var willMutate = rand.Next(1, 101) <= mutationChance;
+
+            if (willMutate)
+            {
+                // choose gene that will mutate
+                var genomeSize = genome.genes.Count();
+                var mutatableGeneIndex = rand.Next(0, genomeSize);
+                var swapWithIndex = -1;
+                do
+                {    //make sure there will be a mutation
+                    swapWithIndex = rand.Next(0, genomeSize);
+                } while (swapWithIndex == mutatableGeneIndex);
+
+                var genes = genome.genes.ToList();
+                var bufferGene = genes[mutatableGeneIndex];
+                genes[mutatableGeneIndex] = genes[swapWithIndex];
+                genes[swapWithIndex] = bufferGene;
+                genome.genes = genes;
+            }
         }
     }
 }
