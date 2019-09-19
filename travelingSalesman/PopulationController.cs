@@ -10,22 +10,23 @@ namespace travelingSalesman
         private const double SELECTION_COEFFICIENT = 0.3;
         private int generationCount;
         private Random random;
+        private int mutationChance;
         public PopulationController()
         {
             CashDistance = new Dictionary<string, double>();
             random = new Random();
-            generationCount = 0;
         }
 
         private IEnumerable<Genome> Population { get; set; }
         private Dictionary<string, Point> Genes { get; set; }
         private Dictionary<string, double> CashDistance { get; set; }
 
-        public void Initialize(Dictionary<string, Point> genes, int size)
+        public void Initialize(Dictionary<string, Point> genes, int size, int mutationChance)
         {
             Genes = genes;
             Population = GenerateRandomPopulation(size);
             generationCount = size;
+            this.mutationChance = mutationChance;
         }
 
         public void GetNextNGenerations(int generations = 1)
@@ -54,8 +55,8 @@ namespace travelingSalesman
             {
                 var first = bestQueue.Dequeue();
                 var second = bestQueue.Dequeue();
-                children.AddRange(Genome.Mate(first, second));
-                children.AddRange(Genome.Mate(second, first));
+                children.AddRange(Genome.Mate(first, second, mutationChance));
+                children.AddRange(Genome.Mate(second, first, mutationChance));
             }
 
             return children;
@@ -130,6 +131,7 @@ namespace travelingSalesman
     
         public void PrintCurrentPopulation()
         {
+          
             foreach (var genome in Population)
             {
                 System.Console.WriteLine(genome);
